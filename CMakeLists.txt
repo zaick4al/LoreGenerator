@@ -1,0 +1,66 @@
+cmake_minimum_required(VERSION 3.16)
+
+project(LoreGenerator LANGUAGES CXX)
+
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
+
+add_executable(LoreGenerator
+  src/main.cpp
+  src/generation/generator.h src/generation/generator.cpp
+
+  src/loregenerator.h src/loregenerator.cpp
+  src/objects/person.h src/objects/person.cpp
+  src/objects/utils.h src/objects/utils.cpp
+  src/generation/personsgen.h src/generation/personsgen.cpp
+  src/objects/job.h src/objects/job.cpp
+)
+
+qt_add_resources(LoreGenerator "resource"
+    PREFIX "/"
+    FILES
+        resource/names/MaleGermanic.txt
+        resource/names/FemaleGermanic.txt
+        resource/names/MaleArabic.txt
+        resource/names/FemaleArabic.txt
+        resource/names/MaleBreton.txt
+        resource/names/FemaleBreton.txt
+        resource/names/MaleDwarven.txt
+        resource/names/FemaleDwarven.txt
+        resource/names/MaleElven.txt
+        resource/names/FemaleElven.txt
+        resource/settlement/roots/Arabic.txt
+        resource/settlement/roots/Latin.txt
+        resource/settlement/roots/Dwarven.txt
+        resource/settlement/topoformants/Arabic.txt
+        resource/settlement/topoformants/Breton.txt
+        resource/settlement/topoformants/Germanic.txt
+        resource/settlement/topoformants/Dwarven.txt
+        resource/surnames/Arabic.txt
+        resource/surnames/Breton.txt
+        resource/surnames/Germanic.txt
+        resource/surnames/Dwarven.txt
+        resource/titles/Any.txt
+        resource/npc/jobs.txt
+)
+
+target_include_directories(LoreGenerator PRIVATE
+    src/
+    src/generation/
+    src/objects/
+)
+
+target_link_libraries(LoreGenerator Qt${QT_VERSION_MAJOR}::Core)
+
+include(GNUInstallDirs)
+install(TARGETS LoreGenerator
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
