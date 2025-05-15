@@ -23,6 +23,10 @@ add_executable(LoreGenerator
   src/objects/job.h src/objects/job.cpp
   src/writer/latexwriter.h src/writer/latexwriter.cpp
   src/writer/writerworker.h src/writer/writerworker.cpp
+  src/generation/settlementgenerator.h src/generation/settlementgenerator.cpp
+  src/objects/settlement.h src/objects/settlement.cpp
+  src/objects/contry.h src/objects/contry.cpp
+  src/objects/family.h src/objects/family.cpp
 )
 
 qt_add_resources(LoreGenerator "resource"
@@ -45,12 +49,18 @@ qt_add_resources(LoreGenerator "resource"
         resource/settlement/topoformants/Breton.txt
         resource/settlement/topoformants/Germanic.txt
         resource/settlement/topoformants/Dwarven.txt
+        resource/settlement/jobs/castle.txt
+        resource/settlement/jobs/hugecity.txt
+        resource/settlement/jobs/largecity.txt
+        resource/settlement/jobs/mediumcity.txt
+        resource/settlement/jobs/outpost.txt
+        resource/settlement/jobs/smalltown.txt
+        resource/settlement/jobs/village.txt
         resource/surnames/Arabic.txt
         resource/surnames/Breton.txt
         resource/surnames/Germanic.txt
         resource/surnames/Dwarven.txt
         resource/titles/Any.txt
-        resource/npc/jobs.txt
 )
 
 target_include_directories(LoreGenerator PRIVATE

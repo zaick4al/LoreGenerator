@@ -9,11 +9,12 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    LoreGenerator loreGen;
     WRITER;
-    for (int i = 0; i < 25; i++) {
-        auto family = loreGen.personGenerator()->generateFamily();
-        WRITER.writeFamily(family);
+    for (int i = 0; i < 2; i++) {
+        auto eth = i == 0 ? Generator::Ethnic::Dwarven : Generator::Ethnic::Germanic;
+        auto type = i == 0 ? Objects::Settlement::HugeCity : Objects::Settlement::MediumCity;
+        auto settlement = LOREGEN.settlementGenerator()->generateSettlement(type, eth);
+        WRITER.writeSettlement(settlement);
     }
 
     return a.exec();

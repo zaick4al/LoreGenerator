@@ -7,7 +7,7 @@ LatexWriter::LatexWriter(QObject *parent)
     m_worker->moveToThread(&m_thread);
     connect(&m_thread, &QThread::finished, m_worker, &QObject::deleteLater);
     connect(this, &LatexWriter::startWorking, m_worker, &WriterWorker::startTimer);
-    connect(this, &LatexWriter::writeFamily, m_worker, &WriterWorker::writeFamily);
+    connect(this, &LatexWriter::writeSettlement, m_worker, &WriterWorker::writeSettlement);
     m_thread.start();
     emit startWorking();
 }

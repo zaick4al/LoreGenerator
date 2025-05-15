@@ -4,8 +4,14 @@
 #include <QObject>
 #include <QDebug>
 
-namespace Objects {
+#ifndef Job_weak
+#define Job_weak std::weak_ptr<Objects::Job>
+#endif
+#ifndef Job_ptr
+#define Job_ptr std::shared_ptr<Objects::Job>
+#endif
 
+namespace Objects {
 class Job : public QObject
 {
     Q_OBJECT
@@ -46,6 +52,7 @@ private:
     StatsAdjustment m_statsAdjustments;
     QString m_description;
     QString m_name;
+
 };
 
 } // namespace Objects

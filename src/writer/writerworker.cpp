@@ -36,7 +36,9 @@ void WriterWorker::writeData(const QString &p_data, const QString &p_fileName)
                    << "\\usepackage{enumitem}\n"
                    << "\\usepackage{listings}\n"
                    << "\\usepackage{hyperref}\n"
-                   << "\\usepackage{graphicx}\n\n"
+                   << "\\usepackage{graphicx}\n"
+                   << "\\usepackage{titlesec}\n"
+                   << "\\setcounter{secnumdepth}{4}\n\n"
                    << "\\begin{document} \n\n"
                    << "\\hypertarget{toc}{}\n"
                    << "\\tableofcontents \n\n"
@@ -82,14 +84,73 @@ void WriterWorker::writeNext()
     writeNext();
 }
 
-void WriterWorker::writeFamily(QList<std::shared_ptr<Objects::Person> > p_family)
+QString WriterWorker::writeSettlement(Settlement_ptr settlement)
+{
+    QString fileName = "Generated/" + settlement->settlementName() + ".tex";
+    QString data;
+    QString defaultData;
+    QTextStream dataStream(&data);
+    int dwarvenCulture = 0;
+    int germanicCulture = 0;
+    int bretonicCulture = 0;
+    int elvenCulture = 0;
+    int arabicCulture = 0;
+    for (const auto family : settlement->citizen()) {
+        auto ethnic = family->persons().first()->ethnic();
+        if (ethnic == Generator::Dwarven)
+            dwarvenCulture += 1;
+        if (ethnic == Generator::Germanic)
+            germanicCulture += 1;
+        if (ethnic == Generator::Breton)
+            bretonicCulture += 1;
+        if (ethnic == Generator::Arabic)
+            arabicCulture += 1;
+        if (ethnic == Generator::Elven)
+            elvenCulture += 1;
+    }
+    int familiesCount = settlement->citizen().length();
+    dataStream << "\\section{" << settlement->settlementName() << "}\n" <<
+                  "\\hyperlink{toc}{Обратно к Содержанию}\n" <<
+                  "\\begin{itemize}[leftmargin=*]\n"
+               << "  \\item \\textbf{Население}: " << settlement->population() << " человек\n"
+               << "\\textbf{(" << familiesCount << " семей)}\n"
+               << "  \\item \\textbf{Площадь}: " << settlement->area() << " м2\n"
+               << "  \\item \\textbf{Дварфийская культура}: " << QString::number(dwarvenCulture * 100 / familiesCount) << "\\%\n"
+               << "  \\item \\textbf{Германическая культура}: " << QString::number(germanicCulture * 100 / familiesCount) << "\\%\n"
+               << "  \\item \\textbf{Бретонская культура}: " << QString::number(bretonicCulture * 100 / familiesCount) << "\\%\n"
+               << "  \\item \\textbf{Арабская культура}: " << QString::number(arabicCulture * 100 / familiesCount) << "\\%\n"
+               << "  \\item \\textbf{Эльфийская культура}: " << QString::number(elvenCulture * 100 / familiesCount) << "\\%\n"
+               << "\\end{itemize}\n\n";
+    dataStream << "\\newpage" << "\\section{Семьи}\n" <<
+                  "\\hyperlink{toc}{Обратно к Содержанию}\n";
+    // << "  \\item \\textbf{Климат}: " << settlement->climate() << "\n"
+    // << "  \\item \\textbf{Тип земли}: " << settlement->landType() << "\n";
+    QString familyData;
+    for (const auto family : settlement->citizen()) {
+        familyData = writeFamily(family->persons(), false);
+        dataStream << familyData;
+    }
+    dataStream << "\\end{document}";
+    m_dataQueue << QPair(data, fileName);
+
+    return data;
+}
+
+QString WriterWorker::writeFamily(QList<std::shared_ptr<Objects::Person> > p_family,
+                                  bool writeToFile)
 {
     QString fileName = "Generated/persons.tex";
     QString data;
     QTextStream dataStream(&data);
     QList<Person_ptr> roots;
-    dataStream << "\\section{" << p_family.first()->surname() << "}\n" << "\\hyperlink{toc}{Обратно к Содержанию}\n" << "\\subsection{Генеалогическое древо}\n"
-               << "\\begin{verbatim}\n";
+    dataStream << "\\subsubsection{Семья " << p_family.first()->surname() << "}\n" <<
+                  "\\hyperlink{toc}{Обратно к Содержанию}\n" <<
+                  "\\begin{itemize}[leftmargin=*]\n"
+                  "  \\item \\textbf{Количество персон}: " << p_family.length() << "\n" <<
+                  "  \\item \\textbf{Культура}: " << p_family.first()->ethnicString() << "\n" <<
+                  "\\end{itemize}\n\n"
+                  "\\paragraph{Генеалогическое древо}\n" <<
+                  "\\begin{verbatim}\n";
 
     for (Person_ptr &person : p_family) {
         if (person->parents().isEmpty()) {
@@ -102,12 +163,16 @@ void WriterWorker::writeFamily(QList<std::shared_ptr<Objects::Person> > p_family
     }
     dataStream << "\\end{verbatim}\n\n" << "\\newpage";
     m_printedPersons.clear();
-    dataStream << "\\subsection{Характеристики персонажей}\n";
+    dataStream << "\\paragraph{Характеристики персонажей}\n";
     for (Person_ptr &person : p_family) {
         printPersonDetails(dataStream, person.get());
     }
-    dataStream << "\\end{document}";
-    m_dataQueue << QPair(data, fileName);
+    if (writeToFile) {
+        dataStream << "\\end{document}";
+        m_dataQueue << QPair(data, fileName);
+    }
+
+    return data;
 }
 
 void WriterWorker::printPerson(QTextStream &p_out, Objects::Person* p_person, int p_depth,
@@ -157,13 +222,18 @@ void WriterWorker::printPerson(QTextStream &p_out, Objects::Person* p_person, in
 
 void WriterWorker::printPersonDetails(QTextStream &out, Objects::Person *person)
 {
-    out << "\\subsection{" << person->name () << " " << person->surname() << "}\n" <<
+    out << "\\paragraph{" << person->name () << " " << person->surname() << "}\n" <<
            "\\begin{itemize}[leftmargin=*]\n"
         << "  \\item \\textbf{Возраст}: " << person->age() << " лет\n"
+        << "  \\item \\textbf{Пол}: " << person->sexString() << "\n"
         << "  \\item \\textbf{Стадия жизни}: " << person->lifeStageString() << "\n"
-        << "  \\item \\textbf{Раса}: " << person->raceString() << "\n"
-        // << "  \\item \\textbf{Работа}: " << person->getJobInfo() << "\n"
-        << "  \\item \\textbf{Характеристики}:\n"
+        << "  \\item \\textbf{Раса}: " << person->raceString() << "\n";
+    if (person->job())
+        out << "  \\item \\textbf{Работа}: " << person->job()->name() << "\n"
+            << "  \\item \\textbf{" << person->job()->description() << "}\n";
+
+
+    out << "  \\item \\textbf{Характеристики}:\n"
         << "\\end{itemize}\n\n";
     out << "\\begin{center}\n"
         << "\\begin{tabular}{|l|c|}\n"

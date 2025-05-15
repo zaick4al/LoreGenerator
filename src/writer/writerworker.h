@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <QTextStream>
 #include <objects/person.h>
+#include <objects/settlement.h>
 
 class WriterWorker : public QObject
 {
@@ -21,7 +22,8 @@ public slots:
     void startTimer();
     void writeData(const QString &p_data, const QString &p_fileName);
     void getStatus();
-    void writeFamily(QList<Person_ptr> p_family);
+    QString writeFamily(QList<Person_ptr> p_family, bool writeToFile = true);
+    QString writeSettlement(Settlement_ptr settlement);
 signals:
     void written();
     void currentStatus(Status status);

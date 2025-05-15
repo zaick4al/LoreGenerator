@@ -40,7 +40,8 @@ QString Generator::generateTitle()
 
 QStringList Generator::getNames(Ethnic p_ethnic, Sex p_sex)
 {
-    QString path = QString(":/resource/names/") + m_sexEnum.key(p_sex) + m_ethnicEnum.key(p_ethnic) + ".txt";
+    QString path = QString(":/resource/names/") + m_sexEnum.key(p_sex) + m_ethnicEnum.key(
+                       p_ethnic) + ".txt";
     return getData(path);
 }
 
@@ -49,9 +50,11 @@ QPair<QStringList, QStringList> Generator::getSettlementNames(Ethnic p_ethnic)
     QString rootsPath = ":/resource/settlement/roots/";
     QString topofPath = ":/resource/settlement/topoformants/";
     QMetaEnum metaEnum = QMetaEnum::fromType<Ethnic>();
-    QString rootsType = p_ethnic == Breton || p_ethnic == Germanic || p_ethnic == Elven ? "Latin" : m_ethnicEnum.key(p_ethnic);
-    QStringList roots = getData(topofPath + rootsType + ".txt");
-    QStringList topoformants = p_ethnic == Elven ? getData(topofPath + m_ethnicEnum.key(Breton) + ".txt") : getData(topofPath + m_ethnicEnum.key(p_ethnic) + ".txt");
+    QString rootsType = p_ethnic == Breton || p_ethnic == Germanic
+                        || p_ethnic == Elven ? "Latin" : m_ethnicEnum.key(p_ethnic);
+    QStringList roots = getData(rootsPath + rootsType + ".txt");
+    QStringList topoformants = p_ethnic == Elven ? getData(topofPath + m_ethnicEnum.key(
+                                   Breton) + ".txt") : getData(topofPath + m_ethnicEnum.key(p_ethnic) + ".txt");
     return QPair<QStringList, QStringList>(roots, topoformants);
 }
 
@@ -81,7 +84,7 @@ QStringList Generator::getData(const QString &p_fileName)
         return QStringList();
     }
     QStringList data = fileData.split(",");
-    if(data.last() == "\n")
+    if (data.last() == "\n")
         data.removeLast();
     return data;
 }

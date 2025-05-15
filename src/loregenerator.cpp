@@ -2,12 +2,22 @@
 #include <QElapsedTimer>
 
 LoreGenerator::LoreGenerator(QObject *parent)
-    : QObject{parent},
-      m_personGenerator(&PersonsGenerator::instance())
+    : QObject{parent}
 {
 }
 
-PersonsGenerator *LoreGenerator::personGenerator() const
+LoreGenerator &LoreGenerator::instance()
 {
-    return m_personGenerator;
+    static LoreGenerator loregen;
+    return loregen;
+}
+
+PersonsGenerator *LoreGenerator::personGenerator()
+{
+    return &m_personGenerator;
+}
+
+SettlementGenerator *LoreGenerator::settlementGenerator()
+{
+    return &m_settlementGenerator;
 }

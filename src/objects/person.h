@@ -14,7 +14,6 @@
 #endif
 
 namespace Objects {
-#define Job_ptr std::shared_ptr<Job>
 class Person : public QObject
 {
     Q_OBJECT

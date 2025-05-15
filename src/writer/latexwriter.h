@@ -20,7 +20,7 @@ protected:
 public:
     static LatexWriter &instance();
 signals:
-    void writeFamily(QList<Person_ptr> p_family);
+    void writeSettlement(Settlement_ptr p_settlement);
     void getStatus();
     void startWorking();
 

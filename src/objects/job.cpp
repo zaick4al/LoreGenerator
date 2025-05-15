@@ -11,23 +11,32 @@ std::shared_ptr<Job> Job::fromString(const QString &p_data, QObject *p_parent)
     job->setDescription(dataSplit.at(1));
     StatsAdjustment adj;
     QStringList descs = dataSplit.last().split(";");
-    for(const auto &string : descs){
-        QString trimmed = string.trimmed();
-        QStringList stat = trimmed.split(" ");
-        QString first = stat.first();
-        QString last = stat.last();
-        if(first == "Strength")
-            adj.strength = last.contains("-") ? -last.replace("-","").toInt() : last.replace("+", "").toInt();
-        else if(first == "Dexterity")
-            adj.dexterity = last.contains("-") ? -last.replace("-","").toInt() : last.replace("+", "").toInt();
-        else if(first == "Constitution")
-            adj.constitution = last.contains("-") ? -last.replace("-","").toInt() : last.replace("+", "").toInt();
-        else if(first == "Intelligence")
-            adj.intelligence = last.contains("-") ? -last.replace("-","").toInt() : last.replace("+", "").toInt();
-        else if(first == "Perception")
-            adj.perception = last.contains("-") ? -last.replace("-","").toInt() : last.replace("+", "").toInt();
-        else if(first == "Charisma")
-            adj.charisma = last.contains("-") ? -last.replace("-","").toInt() : last.replace("+", "").toInt();
+    int i = 0;
+    for (int i = 0; i < descs.length(); i++) {
+        QString value = descs.at(i).trimmed();
+        auto valueToSet = value.contains("-") ? -value.replace("-", "").toInt() : value.replace("+", "").toInt();
+        switch(i){
+        case 0:
+            adj.strength = valueToSet;
+            break;
+        case 1:
+            adj.dexterity = valueToSet;
+            break;
+        case 2:
+            adj.constitution = valueToSet;
+            break;
+        case 3:
+            adj.intelligence = valueToSet;
+            break;
+        case 4:
+            adj.perception = valueToSet;
+            break;
+        case 5:
+            adj.charisma = valueToSet;
+            break;
+        default:
+            break;
+        }
     }
     job->setStatsAdjustments(adj);
     return job;

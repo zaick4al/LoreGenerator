@@ -4,10 +4,10 @@ namespace Objects {
 
 Person::Person(QObject *parent)
     : QObject{parent},
-    m_race(GoldenDwarf),
-    m_lifeStage(Kid),
-    m_age(0),
-    m_spouse(nullptr)
+      m_race(GoldenDwarf),
+      m_lifeStage(Kid),
+      m_age(0),
+      m_spouse(nullptr)
 {
     racesEnum = QMetaEnum::fromType<Race>();
     lifeStagesEnum = QMetaEnum::fromType<LifeStage>();
@@ -16,7 +16,7 @@ Person::Person(QObject *parent)
 
 Person::~Person()
 {
-    this->deleteLater();
+    // this->deleteLater();
 }
 
 QString Person::name() const
@@ -120,6 +120,13 @@ std::shared_ptr<Job> Person::job() const
 void Person::setJob(const std::shared_ptr<Job> &p_job)
 {
     m_job = p_job;
+    auto adjusts = m_job->statsAdjustments();
+    *m_personStats.strength += adjusts.strength;
+    *m_personStats.dexterity += adjusts.dexterity;
+    *m_personStats.charisma += adjusts.charisma;
+    *m_personStats.constitution += adjusts.constitution;
+    *m_personStats.intelligence += adjusts.intelligence;
+    *m_personStats.wisdom += adjusts.perception;
 }
 
 QMetaEnum Person::getRacesEnum()
@@ -179,7 +186,7 @@ void Person::setParents(const QList<Person *> &newParents)
 
 void Person::addParent(Person *p_parent)
 {
-    if(m_parents.contains(p_parent))
+    if (m_parents.contains(p_parent))
         return;
     m_parents.append(p_parent);
 }
@@ -196,7 +203,7 @@ void Person::setChildren(const QList<Person *> &newChildren)
 
 void Person::addChild(Person *p_child)
 {
-    if(m_children.contains(p_child))
+    if (m_children.contains(p_child))
         return;
     m_children.append(p_child);
 }
