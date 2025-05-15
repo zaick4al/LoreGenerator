@@ -16,7 +16,7 @@ class PersonsGenerator : public QObject
 public:
     static PersonsGenerator &instance();
     QList<Person_ptr> generatePersons(int p_amount, const QString &p_ethnic = "", const QString &p_lifeStage = "", const QString p_sex = "");
-    QList<Person_ptr> generateFamily();
+    QList<Person_ptr> generateFamily(Person_ptr p_person = nullptr);
 signals:
 
 protected:

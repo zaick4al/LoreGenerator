@@ -17,9 +17,9 @@ QList<Person_ptr> PersonsGenerator::generatePersons(int p_amount, const QString 
     return persons;
 }
 
-QList<Person_ptr> PersonsGenerator::generateFamily(){
+QList<Person_ptr> PersonsGenerator::generateFamily(Person_ptr p_person){
     QList<Person_ptr> family;
-    auto firstPerson = generateNextPerson();
+    auto firstPerson = p_person ? p_person : generateNextPerson();
     family << firstPerson;
     QMetaEnum lifeStages = Objects::Person::getLifeStagesEnum();
     auto generateChildren = [=, this](Objects::Person *parent = nullptr, Objects::Person *secondParent = nullptr){
