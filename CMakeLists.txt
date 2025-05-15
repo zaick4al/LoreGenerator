@@ -6,7 +6,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
@@ -19,8 +19,10 @@ add_executable(LoreGenerator
   src/loregenerator.h src/loregenerator.cpp
   src/objects/person.h src/objects/person.cpp
   src/objects/utils.h src/objects/utils.cpp
-  src/generation/personsgen.h src/generation/personsgen.cpp
+  src/generation/personsgenerator.h src/generation/personsgenerator.cpp
   src/objects/job.h src/objects/job.cpp
+  src/writer/latexwriter.h src/writer/latexwriter.cpp
+  src/writer/writerworker.h src/writer/writerworker.cpp
 )
 
 qt_add_resources(LoreGenerator "resource"

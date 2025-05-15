@@ -3,11 +3,11 @@
 
 LoreGenerator::LoreGenerator(QObject *parent)
     : QObject{parent},
-      m_personGenerator(new PersonsGen(this))
+      m_personGenerator(&PersonsGenerator::instance())
 {
 }
 
-PersonsGen *LoreGenerator::personGenerator() const
+PersonsGenerator *LoreGenerator::personGenerator() const
 {
     return m_personGenerator;
 }

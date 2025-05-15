@@ -6,7 +6,8 @@ Person::Person(QObject *parent)
     : QObject{parent},
     m_race(GoldenDwarf),
     m_lifeStage(Kid),
-    m_age(0)
+    m_age(0),
+    m_spouse(nullptr)
 {
     racesEnum = QMetaEnum::fromType<Race>();
     lifeStagesEnum = QMetaEnum::fromType<LifeStage>();
@@ -121,14 +122,93 @@ void Person::setJob(const std::shared_ptr<Job> &p_job)
     m_job = p_job;
 }
 
-QMetaEnum Person::getRacesEnum() const
+QMetaEnum Person::getRacesEnum()
 {
-    return racesEnum;
+    return QMetaEnum::fromType<Race>();
 }
 
-QMetaEnum Person::getLifeStagesEnum() const
+QMetaEnum Person::getLifeStagesEnum()
 {
-    return lifeStagesEnum;
+    return QMetaEnum::fromType<LifeStage>();
+}
+
+QMetaEnum Person::getEthnicsEnum()
+{
+    return QMetaEnum::fromType<Generator::Ethnic>();
+}
+
+QMetaEnum Person::getSexEnum()
+{
+    return QMetaEnum::fromType<Generator::Sex>();
+}
+
+Generator::Sex Person::sex() const
+{
+    return m_sex;
+}
+
+void Person::setSex(const Generator::Sex &newSex)
+{
+    m_sex = newSex;
+}
+
+QString Person::sexString() const
+{
+    return getSexEnum().key(m_sex);
+}
+
+Person *Person::spouse() const
+{
+    return m_spouse;
+}
+
+void Person::setSpouse(Person *newSpouse)
+{
+    m_spouse = newSpouse;
+}
+
+QList<Person *> Person::parents() const
+{
+    return m_parents;
+}
+
+void Person::setParents(const QList<Person *> &newParents)
+{
+    m_parents = newParents;
+}
+
+void Person::addParent(Person *p_parent)
+{
+    if(m_parents.contains(p_parent))
+        return;
+    m_parents.append(p_parent);
+}
+
+QList<Person *> Person::children() const
+{
+    return m_children;
+}
+
+void Person::setChildren(const QList<Person *> &newChildren)
+{
+    m_children = newChildren;
+}
+
+void Person::addChild(Person *p_child)
+{
+    if(m_children.contains(p_child))
+        return;
+    m_children.append(p_child);
+}
+
+Person::Stats &Person::personStats()
+{
+    return m_personStats;
+}
+
+void Person::setPersonStats(const Stats &p_personStats)
+{
+    m_personStats = p_personStats;
 }
 
 } // namespace Objects

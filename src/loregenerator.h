@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <objects/person.h>
-#include <generation/personsgen.h>
+#include <generation/personsgenerator.h>
 
 #define Person_ptr std::shared_ptr<Objects::Person>
 
@@ -13,11 +13,11 @@ class LoreGenerator : public QObject
 public:
     explicit LoreGenerator(QObject *parent = nullptr);
 
-    PersonsGen *personGenerator() const;
+    PersonsGenerator *personGenerator() const;
 
 protected:
     Generator *m_generator = &Generator::instance();
-    PersonsGen *m_personGenerator;
+    PersonsGenerator *m_personGenerator;
 };
 
 #endif // LOREGENERATOR_H

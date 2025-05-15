@@ -15,7 +15,7 @@ class Generator : public QObject
 public:
     static Generator &instance();
     enum Sex {Male = 0, Female = 1};
-    enum Ethnic {Arabic = 0, Breton = 1, Germanic = 2, Dwarven = 4, Elven = 5};
+    enum Ethnic {Arabic = 0, Breton = 1, Germanic = 2, Dwarven = 3, Elven = 4};
     enum Type {Name = 0, Surname = 1, Title = 2, SettlementFirst = 3, SettlementSecond = 4};
     Q_ENUM(Sex);
     Q_ENUM(Ethnic);

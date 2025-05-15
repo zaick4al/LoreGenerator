@@ -22,6 +22,8 @@ QString Generator::generateSettlementName(Ethnic p_ethnic)
     return result;
 }
 
+
+
 QString Generator::generateSurname(Ethnic p_ethnic)
 {
     auto surnames = getSurnames(p_ethnic);
