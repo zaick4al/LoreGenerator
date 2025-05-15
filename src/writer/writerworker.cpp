@@ -35,8 +35,12 @@ void WriterWorker::writeData(const QString &p_data, const QString &p_fileName)
                    << "\\usepackage{textcomp}\n"
                    << "\\usepackage{enumitem}\n"
                    << "\\usepackage{listings}\n"
+                   << "\\usepackage{hyperref}\n"
                    << "\\usepackage{graphicx}\n\n"
-                   << "\\begin{document}\n\n";
+                   << "\\begin{document} \n\n"
+                   << "\\hypertarget{toc}{}\n"
+                   << "\\tableofcontents \n\n"
+                   << "\\newpage \n";
     } else {
         starterData = file.readAll();
         starterData.replace("\\end{document}", "");
@@ -51,8 +55,8 @@ void WriterWorker::writeData(const QString &p_data, const QString &p_fileName)
     }
     QTextStream out(&file);
     out << starterData;
-    if(existedData)
-        out << "\\newpage";
+    if (existedData)
+        out << "\\newpage\n";
     out << p_data;
     file.close();
 
@@ -84,8 +88,7 @@ void WriterWorker::writeFamily(QList<std::shared_ptr<Objects::Person> > p_family
     QString data;
     QTextStream dataStream(&data);
     QList<Person_ptr> roots;
-    dataStream << "\\section*{Генеалогическое древо семьи " <<
-               p_family.first()->surname() << "}\n"
+    dataStream << "\\section{" << p_family.first()->surname() << "}\n" << "\\hyperlink{toc}{Обратно к Содержанию}\n" << "\\subsection{Генеалогическое древо}\n"
                << "\\begin{verbatim}\n";
 
     for (Person_ptr &person : p_family) {
@@ -99,7 +102,7 @@ void WriterWorker::writeFamily(QList<std::shared_ptr<Objects::Person> > p_family
     }
     dataStream << "\\end{verbatim}\n\n" << "\\newpage";
     m_printedPersons.clear();
-    dataStream << "\\section*{Характеристики персонажей}\n";
+    dataStream << "\\subsection{Характеристики персонажей}\n";
     for (Person_ptr &person : p_family) {
         printPersonDetails(dataStream, person.get());
     }
@@ -119,7 +122,7 @@ void WriterWorker::printPerson(QTextStream &p_out, Objects::Person* p_person, in
 
     QString nodeSymbol;
     if (p_depth == 0) {
-        nodeSymbol = "-";
+        nodeSymbol = "━";
     } else {
         nodeSymbol = p_lastChild ? "└──" : "├──";
     }
@@ -131,7 +134,7 @@ void WriterWorker::printPerson(QTextStream &p_out, Objects::Person* p_person, in
           << p_person->lifeStageString() << ", " << p_person->sexString() << ")";
     m_printedPersons.append(p_person);
     if (auto spouse = p_person->spouse(); spouse && !m_printedPersons.contains(spouse)) {
-        p_out << "\n" <<  indent << " <3 \n" << indent << nodeSymbol << " "
+        p_out << "\n" <<  indent << "│        <3 \n" << indent << nodeSymbol << " "
               << spouse->name() << " "
               << spouse->surname()
               << " (" << spouse->age() << " лет, "
@@ -154,7 +157,7 @@ void WriterWorker::printPerson(QTextStream &p_out, Objects::Person* p_person, in
 
 void WriterWorker::printPersonDetails(QTextStream &out, Objects::Person *person)
 {
-    out << "\\subsection*{" << person->name () << " " << person->surname() << "}\n" <<
+    out << "\\subsection{" << person->name () << " " << person->surname() << "}\n" <<
            "\\begin{itemize}[leftmargin=*]\n"
         << "  \\item \\textbf{Возраст}: " << person->age() << " лет\n"
         << "  \\item \\textbf{Стадия жизни}: " << person->lifeStageString() << "\n"
