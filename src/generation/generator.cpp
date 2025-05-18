@@ -4,9 +4,9 @@
 
 Q_LOGGING_CATEGORY(GeneratorLog, "app.generator")
 
-QString Generator::generateName(Ethnic p_ethnic, Sex p_sex)
+QString Generator::generateName(Race p_race, Sex p_sex)
 {
-    auto names = getNames(p_ethnic, p_sex);
+    auto names = getNames(p_race, p_sex);
     auto index = generateBounded(0, names.count() - 1);
     return names.at(index);
 }
@@ -24,9 +24,9 @@ QString Generator::generateSettlementName(Ethnic p_ethnic)
 
 
 
-QString Generator::generateSurname(Ethnic p_ethnic)
+QString Generator::generateSurname(Race p_race)
 {
-    auto surnames = getSurnames(p_ethnic);
+    auto surnames = getSurnames(p_race);
     auto index = generateBounded(0, surnames.count() - 1);
     return surnames.at(index);
 }
@@ -38,10 +38,22 @@ QString Generator::generateTitle()
     return titles.at(index);
 }
 
-QStringList Generator::getNames(Ethnic p_ethnic, Sex p_sex)
+QStringList Generator::getNames(Race p_race, Sex p_sex)
 {
-    QString path = QString(":/resource/names/") + m_sexEnum.key(p_sex) + m_ethnicEnum.key(
-                       p_ethnic) + ".txt";
+    auto raceEnum = QMetaEnum::fromType<Race>();
+    QString raceName = raceEnum.key(p_race);
+    if (raceName.contains("Dwarf"))
+        raceName = "Dwarven";
+    else if (raceName.contains("Elf"))
+        raceName = "Elven";
+    else if (raceName.contains("Human"))
+        raceName = raceName.replace("Human", "");
+    else if (raceName == "Demon" || raceName == "Deuna" || raceName == "Vampire")
+        raceName = "Tiefling";
+    else if(raceName == "HalfOrc")
+        raceName = "Halforc";
+    QString path = QString(":/resource/names/") + QString(m_sexEnum.key(p_sex)).toLower() + "/" +
+                   raceName + ".txt";
     return getData(path);
 }
 
@@ -58,10 +70,22 @@ QPair<QStringList, QStringList> Generator::getSettlementNames(Ethnic p_ethnic)
     return QPair<QStringList, QStringList>(roots, topoformants);
 }
 
-QStringList Generator::getSurnames(Ethnic p_ethnic)
+QStringList Generator::getSurnames(Race p_race)
 {
     QString surPath = ":/resource/surnames/";
-    return getData(surPath + m_ethnicEnum.key(p_ethnic) + ".txt");
+    auto raceEnum = QMetaEnum::fromType<Race>();
+    QString raceName = raceEnum.key(p_race);
+    if (raceName.contains("Dwarf"))
+        raceName = "Dwarven";
+    else if (raceName.contains("Elf"))
+        raceName = "Elven";
+    else if (raceName.contains("Human"))
+        raceName = raceName.replace("Human", "");
+    else if (raceName == "Demon" || raceName == "Deuna" || raceName == "Vampire")
+        raceName = "Tiefling";
+    else if(raceName == "HalfOrc")
+        raceName = "Halforc";
+    return getData(surPath + raceName + ".txt");
 }
 
 QStringList Generator::getTitles()
@@ -101,15 +125,15 @@ Generator &Generator::instance()
 
 int Generator::sexAmount() const
 {
-    return m_sexEnum.keyCount() - 1;
+    return m_sexEnum.keyCount();
 }
 
 int Generator::ethnicAmount() const
 {
-    return m_ethnicEnum.keyCount() - 1;
+    return m_ethnicEnum.keyCount();
 }
 
 int Generator::typeAmount() const
 {
-    return m_typeEnum.keyCount() - 1;
+    return m_typeEnum.keyCount();
 }

@@ -57,6 +57,7 @@ public:
 
     int population() const;
     int area() const;
+    QHash<QString, int> culturePercentages();
 
 signals:
 

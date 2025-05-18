@@ -44,9 +44,9 @@ QPair<int, int> Settlement::guardsMinMax(SettlementType p_type)
 
 Settlement::Settlement(QObject *parent)
     : QObject{parent},
-    m_smallHouses(0),
-    m_mediumHouses(0),
-    m_largeHouses(0)
+      m_smallHouses(0),
+      m_mediumHouses(0),
+      m_largeHouses(0)
 {}
 
 int Settlement::housingAmount() const
@@ -134,7 +134,7 @@ void Settlement::setSettlementName(const QString &p_settlementName)
 int Settlement::population() const
 {
     int pop;
-    for(const auto &family : m_citizen)
+    for (const auto &family : m_citizen)
         pop += family->familyCount();
     return pop;
 }
@@ -142,6 +142,39 @@ int Settlement::population() const
 int Settlement::area() const
 {
     return m_largeHouses * 100 + m_mediumHouses * 50 + m_smallHouses * 20;
+}
+
+QHash<QString, int> Settlement::culturePercentages()
+{
+    QHash<QString, int> cultures;
+    cultures.insert("Дварфская", 0);
+    cultures.insert("Германская", 0);
+    cultures.insert("Бретонская", 0);
+    cultures.insert("Арабская", 0);
+    cultures.insert("Эльфийская", 0);
+    cultures.insert("Инфернальная", 0);
+    for (const auto &family : citizen()) {
+        auto ethnic = family->persons().first()->ethnic();
+        QString key;
+        if (ethnic == Generator::Dwarven)
+            key = "Дварфская";
+        if (ethnic == Generator::Germanic)
+            key = "Германская";
+        if (ethnic == Generator::Breton)
+            key = "Бретонская";
+        if (ethnic == Generator::Arabic)
+            key = "Арабская";
+        if (ethnic == Generator::Elven)
+            key = "Эльфийская";
+        if (ethnic == Generator::Infernal)
+            key = "Инфернальная";
+        cultures[key] = cultures.value(key) + 1;
+    }
+    int familyAmount = citizen().count();
+    for (const auto &[key, value] : cultures.asKeyValueRange()) {
+        cultures[key] = value * 100 / familyAmount;
+    }
+    return cultures;
 }
 
 } // namespace Objects

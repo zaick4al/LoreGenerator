@@ -18,31 +18,6 @@ class Person : public QObject
 {
     Q_OBJECT
 public:
-    enum Race {
-        GoldenDwarf = 0,
-        GrayrockDwarf,
-        BlackoreDwarf,
-        WhitemountDwarf,
-        StormveilDwarf,
-        QuariteHuman,
-        ViteanHuman,
-        NortkinHuman,
-        IrvisianHuman,
-        TaikonianHuman,
-        BeinianHuman,
-        QualtianHuman,
-        WoodElf,
-        JadeElf,
-        IceElf,
-        SandElf,
-        Halfling,
-        Fishman,
-        Tiefling,
-        Demon,
-        Deuna,
-        Vampire,
-        Halforc
-    };
     enum LifeStage {
         Kid,
         Teen,
@@ -57,7 +32,6 @@ public:
         int *wisdom = new int(0);
         int *charisma = new int(0);
     };
-    Q_ENUM(Race);
     Q_ENUM(LifeStage);
     explicit Person(QObject *parent = nullptr);
     ~Person();
@@ -71,13 +45,14 @@ public:
     Generator::Ethnic ethnic() const;
     void setEthnic(const Generator::Ethnic &p_ethnic);
 
-    Race race() const;
-    void setRace(Race p_race);
+    Generator::Race race() const;
+    void setRace(Generator::Race p_race);
 
     quint16 age() const;
     void setAge(quint16 p_age);
 
     QString raceString();
+    QString raceRuString();
 
     LifeStage lifeStage() const;
     void setLifeStage(const LifeStage &p_lifeStage);
@@ -136,7 +111,7 @@ protected:
     Person* m_spouse;
     QList<Person*> m_parents;
     QList<Person*> m_children;
-    Race m_race;
+    Generator::Race m_race;
     LifeStage m_lifeStage;
     quint16 m_age;
     Job_ptr m_job;

@@ -18,12 +18,12 @@ signals:
 
 protected:
     Generator *m_generator = &Generator::instance();
-    QHash<Objects::Person::Race, int> m_raceLife;
+    QHash<Generator::Race, int> m_raceLife;
     QList<Job_ptr> m_jobs;
 protected:
     Person_ptr generateNextPerson(const QString &p_ethnic = "", const QString &p_lifeStage = "", const QString p_sex = "");
     void generateFamilyMember(Objects::Person::LifeStage p_lifeStage = Objects::Person::Elder);
-    Objects::Person::Race generateRaceByEthnic(std::shared_ptr<Objects::Person> p_person);
+    Generator::Race generateRaceByEthnic(std::shared_ptr<Objects::Person> p_person);
     int generateAgeByRace(Person_ptr p_person);
     void setupStarters();
     int getEnumByString(QMetaEnum p_enum, const QString &p_enumValue);

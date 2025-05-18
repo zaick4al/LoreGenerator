@@ -90,37 +90,20 @@ QString WriterWorker::writeSettlement(Settlement_ptr settlement)
     QString data;
     QString defaultData;
     QTextStream dataStream(&data);
-    int dwarvenCulture = 0;
-    int germanicCulture = 0;
-    int bretonicCulture = 0;
-    int elvenCulture = 0;
-    int arabicCulture = 0;
-    for (const auto family : settlement->citizen()) {
-        auto ethnic = family->persons().first()->ethnic();
-        if (ethnic == Generator::Dwarven)
-            dwarvenCulture += 1;
-        if (ethnic == Generator::Germanic)
-            germanicCulture += 1;
-        if (ethnic == Generator::Breton)
-            bretonicCulture += 1;
-        if (ethnic == Generator::Arabic)
-            arabicCulture += 1;
-        if (ethnic == Generator::Elven)
-            elvenCulture += 1;
-    }
+
     int familiesCount = settlement->citizen().length();
     dataStream << "\\section{" << settlement->settlementName() << "}\n" <<
                   "\\hyperlink{toc}{Обратно к Содержанию}\n" <<
                   "\\begin{itemize}[leftmargin=*]\n"
                << "  \\item \\textbf{Население}: " << settlement->population() << " человек\n"
                << "\\textbf{(" << familiesCount << " семей)}\n"
-               << "  \\item \\textbf{Площадь}: " << settlement->area() << " м2\n"
-               << "  \\item \\textbf{Дварфийская культура}: " << QString::number(dwarvenCulture * 100 / familiesCount) << "\\%\n"
-               << "  \\item \\textbf{Германическая культура}: " << QString::number(germanicCulture * 100 / familiesCount) << "\\%\n"
-               << "  \\item \\textbf{Бретонская культура}: " << QString::number(bretonicCulture * 100 / familiesCount) << "\\%\n"
-               << "  \\item \\textbf{Арабская культура}: " << QString::number(arabicCulture * 100 / familiesCount) << "\\%\n"
-               << "  \\item \\textbf{Эльфийская культура}: " << QString::number(elvenCulture * 100 / familiesCount) << "\\%\n"
-               << "\\end{itemize}\n\n";
+               << "  \\item \\textbf{Площадь}: " << settlement->area() << " м2\n";
+    auto percentages = settlement->culturePercentages();
+    for (const auto &[key, value] : percentages.asKeyValueRange()) {
+        dataStream << "  \\item \\textbf{" << key << "}: " << QString::number(value) << "\\%\n";
+    };
+
+    dataStream << "\\end{itemize}\n\n";
     dataStream << "\\newpage" << "\\section{Семьи}\n" <<
                   "\\hyperlink{toc}{Обратно к Содержанию}\n";
     // << "  \\item \\textbf{Климат}: " << settlement->climate() << "\n"
@@ -227,10 +210,10 @@ void WriterWorker::printPersonDetails(QTextStream &out, Objects::Person *person)
         << "  \\item \\textbf{Возраст}: " << person->age() << " лет\n"
         << "  \\item \\textbf{Пол}: " << person->sexString() << "\n"
         << "  \\item \\textbf{Стадия жизни}: " << person->lifeStageString() << "\n"
-        << "  \\item \\textbf{Раса}: " << person->raceString() << "\n";
+        << "  \\item \\textbf{Раса}: " << person->raceRuString() << "\n";
     if (person->job())
         out << "  \\item \\textbf{Работа}: " << person->job()->name() << "\n"
-            << "  \\item \\textbf{" << person->job()->description() << "}\n";
+            << "  \\item \\textbf{" << person->job()->description().replace("'", ",") << "}\n";
 
 
     out << "  \\item \\textbf{Характеристики}:\n"
@@ -255,3 +238,4 @@ void WriterWorker::printPersonDetails(QTextStream &out, Objects::Person *person)
         << "\\end{tabular}\n"
         << "\\end{center}\n\n";
 }
+

@@ -4,12 +4,12 @@ namespace Objects {
 
 Person::Person(QObject *parent)
     : QObject{parent},
-      m_race(GoldenDwarf),
+      m_race(Generator::GoldenDwarf),
       m_lifeStage(Kid),
       m_age(0),
       m_spouse(nullptr)
 {
-    racesEnum = QMetaEnum::fromType<Race>();
+    racesEnum = QMetaEnum::fromType<Generator::Race>();
     lifeStagesEnum = QMetaEnum::fromType<LifeStage>();
     ethnicsEnum = QMetaEnum::fromType<Generator::Ethnic>();
 }
@@ -58,12 +58,12 @@ void Person::setEthnic(const Generator::Ethnic &p_ethnic)
     emit ethnicChanged();
 }
 
-Person::Race Person::race() const
+Generator::Race Person::race() const
 {
     return m_race;
 }
 
-void Person::setRace(Race p_race)
+void Person::setRace(Generator::Race p_race)
 {
     if (p_race == m_race)
         return;
@@ -89,6 +89,59 @@ QString Person::raceString()
     return racesEnum.key(race());
 }
 
+QString Person::raceRuString()
+{
+    switch (race()) {
+    case Generator::GoldenDwarf:
+        return "Золотой дварф";
+    case Generator::GrayrockDwarf:
+        return "Серокаменный дварф";
+    case Generator::BlackoreDwarf:
+        return "Чернорудный дварф";
+    case Generator::WhitemountDwarf:
+        return "Белогорый дварф";
+    case Generator::StormveilDwarf:
+        return "Дварф штормовой завесы";
+    case Generator::QuariteHuman:
+        return "Человек-кварит";
+    case Generator::ViteanHuman:
+        return "Человек-витеанец";
+    case Generator::NortkinHuman:
+        return "Человек-норткин";
+    case Generator::IrvisianHuman:
+        return "Человек-ирвисианец";
+    case Generator::TaikonianHuman:
+        return "Человек-тайконец";
+    case Generator::BeinianHuman:
+        return "Человек-бейнит";
+    case Generator::QualtianHuman:
+        return "Человек-квалтиец";
+    case Generator::WoodElf:
+        return "Древесный эльф";
+    case Generator::JadeElf:
+        return "Нефритовый эльф";
+    case Generator::IceElf:
+        return "Морозный эльф";
+    case Generator::SandElf:
+        return "Песчаный эльф";
+    case Generator::Halfling:
+        return "Полурослик";
+    case Generator::Fishman:
+        return "Рыболюд";
+    case Generator::Tiefling:
+        return "Тифлинг";
+    case Generator::Demon:
+        return "Демон";
+    case Generator::Deuna:
+        return "Деуна";
+    case Generator::Vampire:
+        return "Вампир";
+    case Generator::Halforc:
+        return "Полуорк";
+    }
+    return "Человек-витеанец";
+}
+
 Person::LifeStage Person::lifeStage() const
 {
     return m_lifeStage;
@@ -104,12 +157,35 @@ void Person::setLifeStage(const LifeStage &p_lifeStage)
 
 QString Person::lifeStageString() const
 {
-    return lifeStagesEnum.key(lifeStage());
+    switch (lifeStage()) {
+    case Elder:
+        return "Пожилой";
+    case Adult:
+        return "Взрослый";
+    case Teen:
+        return "Подросток";
+    case Kid:
+        return "Дитя";
+
+    }
 }
 
 QString Person::ethnicString() const
 {
-    return ethnicsEnum.key(ethnic());
+    switch (ethnic()) {
+    case Generator::Arabic:
+        return "Арабская";
+    case Generator::Breton:
+        return "Бретонская";
+    case Generator::Germanic:
+        return "Германская";
+    case Generator::Dwarven:
+        return "Дварфская";
+    case Generator::Elven:
+        return "Эльфийская";
+    case Generator::Infernal:
+        return "Инфернальная";
+    }
 }
 
 std::shared_ptr<Job> Person::job() const
@@ -131,7 +207,7 @@ void Person::setJob(const std::shared_ptr<Job> &p_job)
 
 QMetaEnum Person::getRacesEnum()
 {
-    return QMetaEnum::fromType<Race>();
+    return QMetaEnum::fromType<Generator::Race>();
 }
 
 QMetaEnum Person::getLifeStagesEnum()
@@ -161,7 +237,12 @@ void Person::setSex(const Generator::Sex &newSex)
 
 QString Person::sexString() const
 {
-    return getSexEnum().key(m_sex);
+    switch (sex()) {
+    case Generator::Male:
+        return "Мужчина";
+    case Generator::Female:
+        return "Женщина";
+    }
 }
 
 Person *Person::spouse() const

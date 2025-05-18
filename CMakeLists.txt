@@ -32,16 +32,48 @@ add_executable(LoreGenerator
 qt_add_resources(LoreGenerator "resource"
     PREFIX "/"
     FILES
-        resource/names/MaleGermanic.txt
-        resource/names/FemaleGermanic.txt
-        resource/names/MaleArabic.txt
-        resource/names/FemaleArabic.txt
-        resource/names/MaleBreton.txt
-        resource/names/FemaleBreton.txt
-        resource/names/MaleDwarven.txt
-        resource/names/FemaleDwarven.txt
-        resource/names/MaleElven.txt
-        resource/names/FemaleElven.txt
+        resource/names/male/Beinian.txt
+        resource/names/male/Dwarven.txt
+        resource/names/male/Elven.txt
+        resource/names/male/Fishman.txt
+        resource/names/male/Halfling.txt
+        resource/names/male/Halforc.txt
+        resource/names/male/Nortkin.txt
+        resource/names/male/Qualtian.txt
+        resource/names/male/Quarite.txt
+        resource/names/male/Tiefling.txt
+        resource/names/male/Vitean.txt
+        resource/names/male/Irvisian.txt
+        resource/names/male/Taikonian.txt
+
+        resource/names/female/Beinian.txt
+        resource/names/female/Dwarven.txt
+        resource/names/female/Elven.txt
+        resource/names/female/Fishman.txt
+        resource/names/female/Halforc.txt
+        resource/names/female/Halfling.txt
+        resource/names/female/Nortkin.txt
+        resource/names/female/Qualtian.txt
+        resource/names/female/Quarite.txt
+        resource/names/female/Tiefling.txt
+        resource/names/female/Vitean.txt
+        resource/names/female/Irvisian.txt
+        resource/names/female/Taikonian.txt
+
+        resource/surnames/Beinian.txt
+        resource/surnames/Dwarven.txt
+        resource/surnames/Elven.txt
+        resource/surnames/Fishman.txt
+        resource/surnames/Halforc.txt
+        resource/surnames/Halfling.txt
+        resource/surnames/Nortkin.txt
+        resource/surnames/Qualtian.txt
+        resource/surnames/Quarite.txt
+        resource/surnames/Tiefling.txt
+        resource/surnames/Vitean.txt
+        resource/surnames/Irvisian.txt
+        resource/surnames/Taikonian.txt
+
         resource/settlement/roots/Arabic.txt
         resource/settlement/roots/Latin.txt
         resource/settlement/roots/Dwarven.txt
@@ -56,10 +88,6 @@ qt_add_resources(LoreGenerator "resource"
         resource/settlement/jobs/outpost.txt
         resource/settlement/jobs/smalltown.txt
         resource/settlement/jobs/village.txt
-        resource/surnames/Arabic.txt
-        resource/surnames/Breton.txt
-        resource/surnames/Germanic.txt
-        resource/surnames/Dwarven.txt
         resource/titles/Any.txt
 )
 

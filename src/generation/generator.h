@@ -14,9 +14,35 @@ class Generator : public QObject
     Q_OBJECT
 public:
     static Generator &instance();
-    enum Sex {Male = 0, Female = 1};
-    enum Ethnic {Arabic = 0, Breton = 1, Germanic = 2, Dwarven = 3, Elven = 4};
-    enum Type {Name = 0, Surname = 1, Title = 2, SettlementFirst = 3, SettlementSecond = 4};
+    enum Race {
+        GoldenDwarf = 0,
+        GrayrockDwarf,
+        BlackoreDwarf,
+        WhitemountDwarf,
+        StormveilDwarf,
+        QuariteHuman,
+        ViteanHuman,
+        NortkinHuman,
+        IrvisianHuman,
+        TaikonianHuman,
+        BeinianHuman,
+        QualtianHuman,
+        WoodElf,
+        JadeElf,
+        IceElf,
+        SandElf,
+        Halfling,
+        Fishman,
+        Tiefling,
+        Demon,
+        Deuna,
+        Vampire,
+        Halforc
+    };
+    enum Sex {Male = 0, Female};
+    enum Ethnic {Arabic = 0, Breton, Germanic, Dwarven, Elven, Infernal};
+    enum Type {Name = 0, Surname, Title, SettlementFirst, SettlementSecond};
+    Q_ENUM(Race);
     Q_ENUM(Sex);
     Q_ENUM(Ethnic);
     Q_ENUM(Type);
@@ -24,14 +50,14 @@ public:
     int ethnicAmount() const;
     int typeAmount() const;
 public slots:
-    QString generateName(Ethnic p_ethnic, Sex p_sex);
+    QString generateName(Race p_race, Sex p_sex);
     QString generateSettlementName(Ethnic p_ethnic);
-    QString generateSurname(Ethnic p_ethnic);
+    QString generateSurname(Race p_race);
     QString generateTitle();
 protected:
-    QStringList getNames(Ethnic p_ethnic, Sex p_sex);
+    QStringList getNames(Race p_race, Sex p_sex);
     QPair<QStringList, QStringList> getSettlementNames(Ethnic p_ethnic);
-    QStringList getSurnames(Ethnic p_ethnic);
+    QStringList getSurnames(Race p_race);
     QStringList getTitles();
 public:
     QStringList getData(const QString &p_fileName);
