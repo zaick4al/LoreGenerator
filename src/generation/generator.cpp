@@ -4,14 +4,14 @@
 
 Q_LOGGING_CATEGORY(GeneratorLog, "app.generator")
 
-QString Generator::generateName(Race p_race, Sex p_sex)
+QString Generator::generateName(Enums::Race p_race, Enums::Sex p_sex)
 {
     auto names = getNames(p_race, p_sex);
     auto index = generateBounded(0, names.count() - 1);
     return names.at(index);
 }
 
-QString Generator::generateSettlementName(Ethnic p_ethnic)
+QString Generator::generateSettlementName(Enums::Ethnic p_ethnic)
 {
     auto lists = getSettlementNames(p_ethnic);
     auto roots = lists.first;
@@ -24,7 +24,7 @@ QString Generator::generateSettlementName(Ethnic p_ethnic)
 
 
 
-QString Generator::generateSurname(Race p_race)
+QString Generator::generateSurname(Enums::Race p_race)
 {
     auto surnames = getSurnames(p_race);
     auto index = generateBounded(0, surnames.count() - 1);
@@ -38,9 +38,9 @@ QString Generator::generateTitle()
     return titles.at(index);
 }
 
-QStringList Generator::getNames(Race p_race, Sex p_sex)
+QStringList Generator::getNames(Enums::Race p_race, Enums::Sex p_sex)
 {
-    auto raceEnum = QMetaEnum::fromType<Race>();
+    auto raceEnum = QMetaEnum::fromType<Enums::Race>();
     QString raceName = raceEnum.key(p_race);
     if (raceName.contains("Dwarf"))
         raceName = "Dwarven";
@@ -57,23 +57,23 @@ QStringList Generator::getNames(Race p_race, Sex p_sex)
     return getData(path);
 }
 
-QPair<QStringList, QStringList> Generator::getSettlementNames(Ethnic p_ethnic)
+QPair<QStringList, QStringList> Generator::getSettlementNames(Enums::Ethnic p_ethnic)
 {
     QString rootsPath = ":/resource/settlement/roots/";
     QString topofPath = ":/resource/settlement/topoformants/";
-    QMetaEnum metaEnum = QMetaEnum::fromType<Ethnic>();
-    QString rootsType = p_ethnic == Breton || p_ethnic == Germanic
-                        || p_ethnic == Elven ? "Latin" : m_ethnicEnum.key(p_ethnic);
+    QMetaEnum metaEnum = QMetaEnum::fromType<Enums::Ethnic>();
+    QString rootsType = p_ethnic == Enums::Breton || p_ethnic == Enums::Germanic
+                        || p_ethnic == Enums::Elven ? "Latin" : m_ethnicEnum.key(p_ethnic);
     QStringList roots = getData(rootsPath + rootsType + ".txt");
-    QStringList topoformants = p_ethnic == Elven ? getData(topofPath + m_ethnicEnum.key(
-                                   Breton) + ".txt") : getData(topofPath + m_ethnicEnum.key(p_ethnic) + ".txt");
+    QStringList topoformants = p_ethnic == Enums::Elven ? getData(topofPath + m_ethnicEnum.key(
+                                   Enums::Breton) + ".txt") : getData(topofPath + m_ethnicEnum.key(p_ethnic) + ".txt");
     return QPair<QStringList, QStringList>(roots, topoformants);
 }
 
-QStringList Generator::getSurnames(Race p_race)
+QStringList Generator::getSurnames(Enums::Race p_race)
 {
     QString surPath = ":/resource/surnames/";
-    auto raceEnum = QMetaEnum::fromType<Race>();
+    auto raceEnum = QMetaEnum::fromType<Enums::Race>();
     QString raceName = raceEnum.key(p_race);
     if (raceName.contains("Dwarf"))
         raceName = "Dwarven";

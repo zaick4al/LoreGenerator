@@ -13,12 +13,13 @@ public:
 
     void setupStarters();
 
-    Settlement_ptr generateSettlement(Objects::Settlement::SettlementType p_type, Generator::Ethnic p_ethnic);
+    Settlement_ptr generateSettlement(Enums::SettlementType p_type, Enums::Ethnic p_ethnic);
 
 signals:
 
 protected:
-    QHash<Objects::Settlement::SettlementType, QList<Job_ptr>> m_jobs;
+    QHash<Enums::SettlementType, QList<Job_ptr>> m_jobsBySettlementType;
+    QHash<Enums::JobSpecialization, QList<Job_ptr>> m_jobsBySpecialization;
 };
 
 #endif // SETTLEMENTGENERATOR_H

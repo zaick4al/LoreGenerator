@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QDebug>
+#include <enumssingleton.h>
 
 #ifndef Job_weak
 #define Job_weak std::weak_ptr<Objects::Job>
@@ -41,6 +42,16 @@ public:
 
     explicit Job(QObject *p_parent = nullptr);
 
+    QList<Enums::SettlementType> availableIn() const;
+    void setAvailableIn(const QList<Enums::SettlementType> p_availableIn);
+    void addAvailableIn(const Enums::SettlementType p_availableIn);
+    void addAvailableIn(const QString &p_avIn);
+
+    QList<Enums::JobSpecialization> specializations() const;
+    void setSpecializations(const QList<Enums::JobSpecialization> p_specializations);
+    void addSpecializations(const Enums::JobSpecialization p_specialization);
+    void addSpecializations(const QString &p_spec);
+
 signals:
     void nameChanged();
 
@@ -52,7 +63,8 @@ private:
     StatsAdjustment m_statsAdjustments;
     QString m_description;
     QString m_name;
-
+    QList<Enums::SettlementType> m_availableIn;
+    QList<Enums::JobSpecialization> m_specializations;
 };
 
 } // namespace Objects

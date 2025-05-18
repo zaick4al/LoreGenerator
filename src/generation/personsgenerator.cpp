@@ -24,7 +24,7 @@ QList<Person_ptr> PersonsGenerator::generateFamily(Person_ptr p_person)
         int amount = generateBounded(1, 10);
         for (int i = 0; i < amount; i++) {
             int lstg = generateBounded(20) > 14 ? 1 : 0;
-            QString ethnicStringed = QMetaEnum::fromType<Generator::Ethnic>().key(firstPerson->ethnic());
+            QString ethnicStringed = QMetaEnum::fromType<Enums::Ethnic>().key(firstPerson->ethnic());
             auto person = generateNextPerson(ethnicStringed, lifeStages.key(lstg));
             person->setSurname(firstPerson->surname());
             if (parent) {
@@ -32,6 +32,12 @@ QList<Person_ptr> PersonsGenerator::generateFamily(Person_ptr p_person)
                 parent->addChild(person.get());
                 if (parent->age() < person->age())
                     person->setAge(parent->age() * generateBounded(2, 6) / 10);
+                if(secondParent){
+                    if(generateBounded(0, 20) > 9)
+                        person->setRace(secondParent->race());
+                }
+                else
+                    person->setRace(parent->race());
             }
             if (secondParent) {
                 person->addParent(secondParent);
@@ -47,11 +53,11 @@ QList<Person_ptr> PersonsGenerator::generateFamily(Person_ptr p_person)
         int gen = generateBounded(0, 20);
         if (gen < 8)
             return;
-        QString ethnicStringed = QMetaEnum::fromType<Generator::Ethnic>().key(p_spouseTo->ethnic());
-        QString lifeStageStringed = QMetaEnum::fromType<Objects::Person::LifeStage>().key(
+        QString ethnicStringed = QMetaEnum::fromType<Enums::Ethnic>().key(p_spouseTo->ethnic());
+        QString lifeStageStringed = QMetaEnum::fromType<Enums::LifeStage>().key(
                                         p_spouseTo->lifeStage());
         auto spouse = generateNextPerson(ethnicStringed, lifeStageStringed,
-                                         p_spouseTo->sex() == Generator::Male ? "Female" : "Male");
+                                         p_spouseTo->sex() == Enums::Male ? "Female" : "Male");
 
         spouse->setSurname(p_spouseTo->surname());
         auto stage = p_spouseTo->lifeStage();
@@ -59,26 +65,26 @@ QList<Person_ptr> PersonsGenerator::generateFamily(Person_ptr p_person)
         int age;
         auto lifeLength = m_raceLife.value(spouse->race());
         switch (stage) {
-        case Objects::Person::Kid:
+        case Enums::Kid:
             age = generateBounded(int(lifeLength * 0.06));
-        case Objects::Person::Teen:
+        case Enums::Teen:
             age = generateBounded(int(lifeLength * 0.07), int(lifeLength * 0.2));
-        case Objects::Person::Adult:
+        case Enums::Adult:
             age = generateBounded(int(lifeLength * 0.21), int(lifeLength * 0.8));
-        case Objects::Person::Elder:
+        case Enums::Elder:
             age = generateBounded(int(lifeLength * 0.81), lifeLength);
         }
         p_spouseTo->setSpouse(spouse.get());
         spouse->setSpouse(p_spouseTo.get());
         family.append(spouse);
     };
-    if (firstPerson->lifeStage() == Objects::Person::Kid
-            || firstPerson->lifeStage() == Objects::Person::Teen) {
+    if (firstPerson->lifeStage() == Enums::Kid
+            || firstPerson->lifeStage() == Enums::Teen) {
         family.append(generateChildren());
         return family;
     }
     generateSpouse(firstPerson);
-    if (firstPerson->lifeStage() == Objects::Person::Adult) {
+    if (firstPerson->lifeStage() == Enums::Adult) {
         int gen = generateBounded(0, 20);
         generateSpouse(firstPerson);
         if (gen > 7 || firstPerson->spouse() && gen > 4) {
@@ -92,7 +98,7 @@ QList<Person_ptr> PersonsGenerator::generateFamily(Person_ptr p_person)
     for (auto adult : adults) {
         auto lifeLength = m_raceLife.value(adult->race());
         adult->setAge(generateBounded(int(lifeLength * 0.21), int(lifeLength * 0.8)));
-        adult->setLifeStage(Objects::Person::Adult);
+        adult->setLifeStage(Enums::Adult);
         generateSpouse(adult);
         int gen = generateBounded(20);
         family.append(adult);
@@ -117,23 +123,23 @@ Person_ptr PersonsGenerator::generateNextPerson(const QString &p_ethnic, const Q
         const QString p_sex)
 {
     auto person = std::make_shared<Objects::Person>(this);
-    Generator::Ethnic ethnic;
+    Enums::Ethnic ethnic;
     if (p_ethnic.isEmpty())
-        ethnic = static_cast<Generator::Ethnic>(generateBounded(m_generator->ethnicAmount()));
+        ethnic = static_cast<Enums::Ethnic>(generateBounded(m_generator->ethnicAmount()));
     else {
         auto ethnicsEnum = Objects::Person::getEthnicsEnum();
         int value = getEnumByString(ethnicsEnum, p_ethnic);
         Q_ASSERT(value >= 0);
-        ethnic = static_cast<Generator::Ethnic>(value);
+        ethnic = static_cast<Enums::Ethnic>(value);
     }
-    Generator::Sex sex;
+    Enums::Sex sex;
     if (p_sex.isEmpty())
-        sex = generateBounded(0, 20) > 10 ? Generator::Sex::Female : Generator::Sex::Male;
+        sex = generateBounded(0, 20) > 10 ? Enums::Sex::Female : Enums::Sex::Male;
     else {
         auto sexEnum = Objects::Person::getSexEnum();
         int value = getEnumByString(sexEnum, p_sex);
         Q_ASSERT(value >= 0);
-        sex = (Generator::Sex)value;
+        sex = (Enums::Sex)value;
     }
     person->setSex(sex);
     person->setEthnic(ethnic);
@@ -153,16 +159,16 @@ Person_ptr PersonsGenerator::generateNextPerson(const QString &p_ethnic, const Q
         auto lifeStagesEnum = Objects::Person::getLifeStagesEnum();
         int value = getEnumByString(lifeStagesEnum, p_lifeStage);
         Q_ASSERT(value >= 0);
-        Objects::Person::LifeStage stage = static_cast<Objects::Person::LifeStage>(value);
+        Enums::LifeStage stage = static_cast<Enums::LifeStage>(value);
         auto lifeLength = m_raceLife.value(person->race());
         switch (stage) {
-        case Objects::Person::Kid:
+        case Enums::Kid:
             age = generateBounded(int(lifeLength * 0.06));
-        case Objects::Person::Teen:
+        case Enums::Teen:
             age = generateBounded(int(lifeLength * 0.07), int(lifeLength * 0.2));
-        case Objects::Person::Adult:
+        case Enums::Adult:
             age = generateBounded(int(lifeLength * 0.21), int(lifeLength * 0.8));
-        case Objects::Person::Elder:
+        case Enums::Elder:
             age = generateBounded(int(lifeLength * 0.81), lifeLength);
         }
         person->setAge(age);
@@ -172,86 +178,86 @@ Person_ptr PersonsGenerator::generateNextPerson(const QString &p_ethnic, const Q
     person->setAge(age);
     auto lifeLength = m_raceLife.value(person->race());
     if (age <= int(lifeLength * 0.06))
-        person->setLifeStage(Objects::Person::Kid);
+        person->setLifeStage(Enums::Kid);
     else if (age <= int(lifeLength * 0.2))
-        person->setLifeStage(Objects::Person::Teen);
+        person->setLifeStage(Enums::Teen);
     else if (age <= int(lifeLength * 0.8))
-        person->setLifeStage(Objects::Person::Adult);
+        person->setLifeStage(Enums::Adult);
     else
-        person->setLifeStage(Objects::Person::Elder);
+        person->setLifeStage(Enums::Elder);
     return person;
 }
 
-Generator::Race PersonsGenerator::generateRaceByEthnic(std::shared_ptr<Objects::Person>
+Enums::Race PersonsGenerator::generateRaceByEthnic(std::shared_ptr<Objects::Person>
         p_person)
 {
     switch (p_person->ethnic()) {
-    case Generator::Arabic: {
+    case Enums::Arabic: {
         auto gen = generateBounded(3);
         switch (gen) {
         case 0:
-            return Generator::QuariteHuman;
+            return Enums::QuariteHuman;
         case 1:
-            return Generator::SandElf;
+            return Enums::SandElf;
         case 2:
-            return Generator::Deuna;
+            return Enums::Deuna;
         case 3:
-            return Generator::Halfling;
+            return Enums::Halfling;
         }
     }
-    case Generator::Breton: {
+    case Enums::Breton: {
         bool isHuman = generateBounded(20) > 7;
         if (isHuman)
-            return generateBounded(20) > 10 ? Generator::QualtianHuman : Generator::ViteanHuman;
+            return generateBounded(20) > 10 ? Enums::QualtianHuman : Enums::ViteanHuman;
         bool isElf = generateBounded(20) > 15;
         if (isElf)
-            return static_cast<Generator::Race>(generateBounded(12, 13));
+            return static_cast<Enums::Race>(generateBounded(12, 13));
         int gen = generateBounded(20);
         if (gen > 15)
-            return Generator::Vampire;
+            return Enums::Vampire;
         else if (gen > 10)
-            return Generator::Tiefling;
+            return Enums::Tiefling;
         else if (gen > 5)
-            return Generator::Halfling;
+            return Enums::Halfling;
         else
-            return Generator::Halforc;
+            return Enums::Halforc;
     }
-    case Generator::Germanic: {
+    case Enums::Germanic: {
         bool isElf = generateBounded(20) > 14;
         if (isElf)
-            return static_cast<Generator::Race>(generateBounded(12, 14));
+            return static_cast<Enums::Race>(generateBounded(12, 14));
         bool isDwarf = generateBounded(20) > 9;
         if (isDwarf) {
             int generation = generateBounded(3);
-            return generation > 2 ? Generator::WhitemountDwarf : static_cast<Generator::Race>
+            return generation > 2 ? Enums::WhitemountDwarf : static_cast<Enums::Race>
                    (generation);
         }
         bool isHuman = generateBounded(20) > 7;
         if (isHuman)
-            return generateBounded(20) > 10 ? Generator::NortkinHuman : Generator::ViteanHuman;
-        return generateBounded(20) > 10 ? Generator::Tiefling : Generator::Halforc;
+            return generateBounded(20) > 10 ? Enums::NortkinHuman : Enums::ViteanHuman;
+        return generateBounded(20) > 10 ? Enums::Tiefling : Enums::Halforc;
     }
-    case Generator::Dwarven: {
+    case Enums::Dwarven: {
         int gen = generateBounded(4);
-        return static_cast<Generator::Race>(gen);
+        return static_cast<Enums::Race>(gen);
     }
-    case Generator::Elven: {
+    case Enums::Elven: {
         int gen = generateBounded(12, 15);
-        return static_cast<Generator::Race>(gen);
+        return static_cast<Enums::Race>(gen);
     }
-    case Generator::Infernal: {
+    case Enums::Infernal: {
         int gen = generateBounded(0, 20);
         if (gen > 18)
-            return Generator::Deuna;
+            return Enums::Deuna;
         else if (gen > 14)
-            return Generator::Demon;
+            return Enums::Demon;
         else if (gen > 10)
-            return Generator::Fishman;
+            return Enums::Fishman;
         else
-            return Generator::Tiefling;
+            return Enums::Tiefling;
     }
     }
-    return Generator::ViteanHuman;
+    return Enums::ViteanHuman;
 }
 
 int PersonsGenerator::generateAgeByRace(std::shared_ptr<Objects::Person> p_person)
@@ -261,10 +267,10 @@ int PersonsGenerator::generateAgeByRace(std::shared_ptr<Objects::Person> p_perso
 
 void PersonsGenerator::setupStarters()
 {
-    auto racesEnum = QMetaEnum::fromType<Generator::Race>();
+    auto racesEnum = QMetaEnum::fromType<Enums::Race>();
     for (int i = 0; i < racesEnum.keyCount(); i++) {
         QString race = QString(racesEnum.key(i)).trimmed().toLower();
-        auto enumValue = static_cast<Generator::Race>(racesEnum.value(i));
+        auto enumValue = static_cast<Enums::Race>(racesEnum.value(i));
         if (race.contains("human")) {
             m_raceLife.insert(enumValue, 110);
         } else if (race.contains("dwarf")) {

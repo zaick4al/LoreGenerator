@@ -14,10 +14,10 @@ class Utils : public QObject
     Q_OBJECT
 public:
     static Utils &instance();
-    QString raceString(Generator::Race p_race) const;
+    QString raceString(Enums::Race p_race) const;
 
 protected:
-    QHash<Generator::Race, QString> m_raceString;
+    QHash<Enums::Race, QString> m_raceString;
 private:
     explicit Utils(QObject *parent = nullptr);
 };

@@ -5,6 +5,9 @@
 #include <job.h>
 #include <family.h>
 
+#include <enumssingleton.h>
+#include <enumssingleton.h>
+
 #ifndef Settlement_weak
 #define Settlement_weak std::weak_ptr<Objects::Settlement>
 #endif
@@ -18,18 +21,9 @@ class Settlement : public QObject
 {
     Q_OBJECT
 public:
-    enum SettlementType{
-        HugeCity,
-        LargeCity,
-        MediumCity,
-        SmallTown,
-        Castle,
-        Village,
-        Outpost
-    };
-    Q_ENUM(SettlementType);
-    static QPair<int, int> housingMinMax(SettlementType p_type);
-    static QPair<int, int> guardsMinMax(SettlementType p_type);
+
+    static QPair<int, int> housingMinMax(Enums::SettlementType p_type);
+    static QPair<int, int> guardsMinMax(Enums::SettlementType p_type);
     explicit Settlement(QObject *parent = nullptr);
 
     int housingAmount() const;
@@ -49,8 +43,8 @@ public:
     int largeHouses() const;
     void setLargeHouses(int p_largeHouses);
 
-    Generator::Ethnic mainEthnic() const;
-    void setMainEthnic(const Generator::Ethnic &p_mainEthnic);
+    Enums::Ethnic mainEthnic() const;
+    void setMainEthnic(const Enums::Ethnic &p_mainEthnic);
 
     QString settlementName() const;
     void setSettlementName(const QString &p_settlementName);
@@ -58,6 +52,9 @@ public:
     int population() const;
     int area() const;
     QHash<QString, int> culturePercentages();
+
+    QHash<Enums::JobSpecialization, qreal> specialisations() const;
+    void setSpecialisations(const QHash<Enums::JobSpecialization, qreal> &p_specialisations);
 
 signals:
 
@@ -68,7 +65,8 @@ protected:
     int m_largeHouses;
     QList<Family_ptr> m_citizen;
     QString m_settlementName;
-    Generator::Ethnic m_mainEthnic;
+    Enums::Ethnic m_mainEthnic;
+    QHash<Enums::JobSpecialization, qreal> m_specialisations;
 };
 
 } // namespace Objects

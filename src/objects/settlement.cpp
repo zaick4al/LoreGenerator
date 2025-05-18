@@ -2,42 +2,42 @@
 
 namespace Objects {
 
-QPair<int, int> Settlement::housingMinMax(SettlementType p_type)
+QPair<int, int> Settlement::housingMinMax(Enums::SettlementType p_type)
 {
     switch (p_type) {
-    case HugeCity:
+    case Enums::HugeCity:
         return QPair<int, int>(90, 150);
-    case LargeCity:
+    case Enums::LargeCity:
         return QPair<int, int>(50, 70);
-    case MediumCity:
+    case Enums::MediumCity:
         return QPair<int, int>(30, 50);
-    case SmallTown:
+    case Enums::SmallTown:
         return QPair<int, int>(20, 30);
-    case Castle:
+    case Enums::Castle:
         return QPair<int, int>(10, 30);
-    case Village:
+    case Enums::Village:
         return QPair<int, int>(10, 20);
-    case Outpost:
+    case Enums::Outpost:
         return QPair<int, int>(3, 9);
     }
 }
 
-QPair<int, int> Settlement::guardsMinMax(SettlementType p_type)
+QPair<int, int> Settlement::guardsMinMax(Enums::SettlementType p_type)
 {
     switch (p_type) {
-    case HugeCity:
+    case Enums::HugeCity:
         return QPair<int, int>(100, 170);
-    case LargeCity:
+    case Enums::LargeCity:
         return QPair<int, int>(60, 80);
-    case MediumCity:
+    case Enums::MediumCity:
         return QPair<int, int>(40, 60);
-    case SmallTown:
+    case Enums::SmallTown:
         return QPair<int, int>(10, 20);
-    case Castle:
+    case Enums::Castle:
         return QPair<int, int>(40, 60);
-    case Village:
+    case Enums::Village:
         return QPair<int, int>(1, 10);
-    case Outpost:
+    case Enums::Outpost:
         return QPair<int, int>(3, 9);
     }
 }
@@ -47,7 +47,13 @@ Settlement::Settlement(QObject *parent)
       m_smallHouses(0),
       m_mediumHouses(0),
       m_largeHouses(0)
-{}
+{
+    auto jobsMeta = QMetaEnum::fromType<Enums::JobSpecialization>();
+    for(int i = 0; i <  jobsMeta.keyCount(); i++){
+        auto spec = static_cast<Enums::JobSpecialization>(jobsMeta.value(i));
+        m_specialisations.insert(spec, 0.0);
+    }
+}
 
 int Settlement::housingAmount() const
 {
@@ -111,12 +117,12 @@ void Settlement::setLargeHouses(int p_largeHouses)
     m_largeHouses = p_largeHouses;
 }
 
-Generator::Ethnic Settlement::mainEthnic() const
+Enums::Ethnic Settlement::mainEthnic() const
 {
     return m_mainEthnic;
 }
 
-void Settlement::setMainEthnic(const Generator::Ethnic &p_mainEthnic)
+void Settlement::setMainEthnic(const Enums::Ethnic &p_mainEthnic)
 {
     m_mainEthnic = p_mainEthnic;
 }
@@ -156,17 +162,17 @@ QHash<QString, int> Settlement::culturePercentages()
     for (const auto &family : citizen()) {
         auto ethnic = family->persons().first()->ethnic();
         QString key;
-        if (ethnic == Generator::Dwarven)
+        if (ethnic == Enums::Dwarven)
             key = "Дварфская";
-        if (ethnic == Generator::Germanic)
+        if (ethnic == Enums::Germanic)
             key = "Германская";
-        if (ethnic == Generator::Breton)
+        if (ethnic == Enums::Breton)
             key = "Бретонская";
-        if (ethnic == Generator::Arabic)
+        if (ethnic == Enums::Arabic)
             key = "Арабская";
-        if (ethnic == Generator::Elven)
+        if (ethnic == Enums::Elven)
             key = "Эльфийская";
-        if (ethnic == Generator::Infernal)
+        if (ethnic == Enums::Infernal)
             key = "Инфернальная";
         cultures[key] = cultures.value(key) + 1;
     }
@@ -175,6 +181,16 @@ QHash<QString, int> Settlement::culturePercentages()
         cultures[key] = value * 100 / familyAmount;
     }
     return cultures;
+}
+
+QHash<Enums::JobSpecialization, qreal> Settlement::specialisations() const
+{
+    return m_specialisations;
+}
+
+void Settlement::setSpecialisations(const QHash<Enums::JobSpecialization, qreal> &p_specialisations)
+{
+    m_specialisations = p_specialisations;
 }
 
 } // namespace Objects

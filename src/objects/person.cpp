@@ -4,14 +4,14 @@ namespace Objects {
 
 Person::Person(QObject *parent)
     : QObject{parent},
-      m_race(Generator::GoldenDwarf),
-      m_lifeStage(Kid),
+      m_race(Enums::GoldenDwarf),
+      m_lifeStage(Enums::Kid),
       m_age(0),
       m_spouse(nullptr)
 {
-    racesEnum = QMetaEnum::fromType<Generator::Race>();
-    lifeStagesEnum = QMetaEnum::fromType<LifeStage>();
-    ethnicsEnum = QMetaEnum::fromType<Generator::Ethnic>();
+    racesEnum = QMetaEnum::fromType<Enums::Race>();
+    lifeStagesEnum = QMetaEnum::fromType<Enums::LifeStage>();
+    ethnicsEnum = QMetaEnum::fromType<Enums::Ethnic>();
 }
 
 Person::~Person()
@@ -45,12 +45,12 @@ void Person::setSurname(const QString &p_surname)
     emit surnameChanged();
 }
 
-Generator::Ethnic Person::ethnic() const
+Enums::Ethnic Person::ethnic() const
 {
     return m_ethnic;
 }
 
-void Person::setEthnic(const Generator::Ethnic &p_ethnic)
+void Person::setEthnic(const Enums::Ethnic &p_ethnic)
 {
     if (m_ethnic == p_ethnic)
         return;
@@ -58,12 +58,12 @@ void Person::setEthnic(const Generator::Ethnic &p_ethnic)
     emit ethnicChanged();
 }
 
-Generator::Race Person::race() const
+Enums::Race Person::race() const
 {
     return m_race;
 }
 
-void Person::setRace(Generator::Race p_race)
+void Person::setRace(Enums::Race p_race)
 {
     if (p_race == m_race)
         return;
@@ -92,62 +92,62 @@ QString Person::raceString()
 QString Person::raceRuString()
 {
     switch (race()) {
-    case Generator::GoldenDwarf:
+    case Enums::GoldenDwarf:
         return "Золотой дварф";
-    case Generator::GrayrockDwarf:
+    case Enums::GrayrockDwarf:
         return "Серокаменный дварф";
-    case Generator::BlackoreDwarf:
+    case Enums::BlackoreDwarf:
         return "Чернорудный дварф";
-    case Generator::WhitemountDwarf:
+    case Enums::WhitemountDwarf:
         return "Белогорый дварф";
-    case Generator::StormveilDwarf:
+    case Enums::StormveilDwarf:
         return "Дварф штормовой завесы";
-    case Generator::QuariteHuman:
+    case Enums::QuariteHuman:
         return "Человек-кварит";
-    case Generator::ViteanHuman:
+    case Enums::ViteanHuman:
         return "Человек-витеанец";
-    case Generator::NortkinHuman:
+    case Enums::NortkinHuman:
         return "Человек-норткин";
-    case Generator::IrvisianHuman:
+    case Enums::IrvisianHuman:
         return "Человек-ирвисианец";
-    case Generator::TaikonianHuman:
+    case Enums::TaikonianHuman:
         return "Человек-тайконец";
-    case Generator::BeinianHuman:
+    case Enums::BeinianHuman:
         return "Человек-бейнит";
-    case Generator::QualtianHuman:
+    case Enums::QualtianHuman:
         return "Человек-квалтиец";
-    case Generator::WoodElf:
+    case Enums::WoodElf:
         return "Древесный эльф";
-    case Generator::JadeElf:
+    case Enums::JadeElf:
         return "Нефритовый эльф";
-    case Generator::IceElf:
+    case Enums::IceElf:
         return "Морозный эльф";
-    case Generator::SandElf:
+    case Enums::SandElf:
         return "Песчаный эльф";
-    case Generator::Halfling:
+    case Enums::Halfling:
         return "Полурослик";
-    case Generator::Fishman:
+    case Enums::Fishman:
         return "Рыболюд";
-    case Generator::Tiefling:
+    case Enums::Tiefling:
         return "Тифлинг";
-    case Generator::Demon:
+    case Enums::Demon:
         return "Демон";
-    case Generator::Deuna:
+    case Enums::Deuna:
         return "Деуна";
-    case Generator::Vampire:
+    case Enums::Vampire:
         return "Вампир";
-    case Generator::Halforc:
+    case Enums::Halforc:
         return "Полуорк";
     }
     return "Человек-витеанец";
 }
 
-Person::LifeStage Person::lifeStage() const
+Enums::LifeStage Person::lifeStage() const
 {
     return m_lifeStage;
 }
 
-void Person::setLifeStage(const LifeStage &p_lifeStage)
+void Person::setLifeStage(const Enums::LifeStage &p_lifeStage)
 {
     if (p_lifeStage == m_lifeStage)
         return;
@@ -158,13 +158,13 @@ void Person::setLifeStage(const LifeStage &p_lifeStage)
 QString Person::lifeStageString() const
 {
     switch (lifeStage()) {
-    case Elder:
+    case Enums::Elder:
         return "Пожилой";
-    case Adult:
+    case Enums::Adult:
         return "Взрослый";
-    case Teen:
+    case Enums::Teen:
         return "Подросток";
-    case Kid:
+    case Enums::Kid:
         return "Дитя";
 
     }
@@ -173,17 +173,17 @@ QString Person::lifeStageString() const
 QString Person::ethnicString() const
 {
     switch (ethnic()) {
-    case Generator::Arabic:
+    case Enums::Arabic:
         return "Арабская";
-    case Generator::Breton:
+    case Enums::Breton:
         return "Бретонская";
-    case Generator::Germanic:
+    case Enums::Germanic:
         return "Германская";
-    case Generator::Dwarven:
+    case Enums::Dwarven:
         return "Дварфская";
-    case Generator::Elven:
+    case Enums::Elven:
         return "Эльфийская";
-    case Generator::Infernal:
+    case Enums::Infernal:
         return "Инфернальная";
     }
 }
@@ -207,30 +207,30 @@ void Person::setJob(const std::shared_ptr<Job> &p_job)
 
 QMetaEnum Person::getRacesEnum()
 {
-    return QMetaEnum::fromType<Generator::Race>();
+    return QMetaEnum::fromType<Enums::Race>();
 }
 
 QMetaEnum Person::getLifeStagesEnum()
 {
-    return QMetaEnum::fromType<LifeStage>();
+    return QMetaEnum::fromType<Enums::LifeStage>();
 }
 
 QMetaEnum Person::getEthnicsEnum()
 {
-    return QMetaEnum::fromType<Generator::Ethnic>();
+    return QMetaEnum::fromType<Enums::Ethnic>();
 }
 
 QMetaEnum Person::getSexEnum()
 {
-    return QMetaEnum::fromType<Generator::Sex>();
+    return QMetaEnum::fromType<Enums::Sex>();
 }
 
-Generator::Sex Person::sex() const
+Enums::Sex Person::sex() const
 {
     return m_sex;
 }
 
-void Person::setSex(const Generator::Sex &newSex)
+void Person::setSex(const Enums::Sex &newSex)
 {
     m_sex = newSex;
 }
@@ -238,9 +238,9 @@ void Person::setSex(const Generator::Sex &newSex)
 QString Person::sexString() const
 {
     switch (sex()) {
-    case Generator::Male:
+    case Enums::Male:
         return "Мужчина";
-    case Generator::Female:
+    case Enums::Female:
         return "Женщина";
     }
 }
